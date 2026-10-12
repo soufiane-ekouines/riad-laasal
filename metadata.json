@@ -1,0 +1,8 @@
+{
+  "name": "Remix Riad El Aâssal - Miel \u0026 Terroir Marocain d\u0027Exception",
+  "description": "Boutique en ligne premium de miels purs et pâtes à tartiner artisanales du terroir marocain. Miels de Daghmouss, Thym, Oranger, Jujubier et véritable Amlou aux amandes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

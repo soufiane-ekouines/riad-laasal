@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 210" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DFAD4A" />
+      <stop offset="35%" stop-color="#D99A1E" />
+      <stop offset="70%" stop-color="#B37710" />
+      <stop offset="100%" stop-color="#8A5A12" />
+    </linearGradient>
+    <linearGradient id="gold2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F5D07A" />
+      <stop offset="50%" stop-color="#D99A1E" />
+      <stop offset="100%" stop-color="#6C450B" />
+    </linearGradient>
+  </defs>
+
+  <!-- Bee Emblem -->
+  <g transform="translate(330, 8)">
+    <circle cx="65" cy="18" r="9" fill="url(#gold)" />
+    <path d="M60 11C57 5 52 3 48 6" stroke="url(#gold2)" stroke-width="3" stroke-linecap="round" fill="none" />
+    <path d="M70 11C73 5 78 3 82 6" stroke="url(#gold2)" stroke-width="3" stroke-linecap="round" fill="none" />
+    <circle cx="48" cy="6" r="2.5" fill="url(#gold2)" />
+    <circle cx="82" cy="6" r="2.5" fill="url(#gold2)" />
+    <ellipse cx="40" cy="28" rx="26" ry="14" transform="rotate(-25 40 28)" stroke="url(#gold2)" stroke-width="4.5" fill="none" />
+    <ellipse cx="90" cy="28" rx="26" ry="14" transform="rotate(25 90 28)" stroke="url(#gold2)" stroke-width="4.5" fill="none" />
+    <ellipse cx="48" cy="40" rx="18" ry="9" transform="rotate(-10 48 40)" stroke="url(#gold)" stroke-width="3.5" fill="none" />
+    <ellipse cx="82" cy="40" rx="18" ry="9" transform="rotate(10 82 40)" stroke="url(#gold)" stroke-width="3.5" fill="none" />
+    <path d="M50 48C50 48 65 42 80 48C80 62 74 84 65 92C56 84 50 62 50 48Z" fill="url(#gold)" />
+    <path d="M53 58H77" stroke="#FFF8E7" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M56 68H74" stroke="#FFF8E7" stroke-width="3.5" stroke-linecap="round" />
+    <path d="M60 78H70" stroke="#FFF8E7" stroke-width="3.5" stroke-linecap="round" />
+  </g>
+
+  <!-- Arabic Calligraphy "رياض" -->
+  <text x="300" y="70" text-anchor="end" font-size="78" font-weight="bold" font-family="'Cormorant Garamond', 'Amiri', serif" fill="url(#gold)">
+    رياض
+  </text>
+
+  <!-- Arabic Calligraphy "العسل" -->
+  <text x="320" y="140" text-anchor="end" font-size="88" font-weight="bold" font-family="'Cormorant Garamond', 'Amiri', serif" fill="url(#gold)">
+    العسل
+  </text>
+  <path d="M20 148H320" stroke="url(#gold2)" stroke-width="3.5" stroke-linecap="round" />
+
+  <!-- Latin "RIAD EL AÂSSAL" -->
+  <text x="15" y="195" font-size="32" font-weight="600" font-family="'Playfair Display', Georgia, serif" letter-spacing="9" fill="url(#gold)">
+    RIAD EL AÂSSAL
+  </text>
+</svg>
