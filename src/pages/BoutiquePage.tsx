@@ -65,11 +65,11 @@ export const BoutiquePage: React.FC = () => {
 
   const categories = [
     { id: 'all', label: 'Tout le Terroir', count: PRODUCTS.length },
-    { id: 'miel', label: 'Miels Purs du Maroc', count: PRODUCTS.filter(p => p.category === 'miel').length },
-    { id: 'pate-a-tartiner', label: 'Pâte à Tartiner (Amlou)', count: PRODUCTS.filter(p => p.category === 'pate-a-tartiner').length },
-    { id: 'packs', label: 'Coffrets & Packs', count: PRODUCTS.filter(p => p.category === 'packs').length },
+    { id: 'miel', label: 'Miel', count: PRODUCTS.filter(p => p.category === 'miel').length },
+    { id: 'pate-a-tartiner', label: 'Pâte à tartiner', count: PRODUCTS.filter(p => p.category === 'pate-a-tartiner').length },
+    { id: 'packs', label: 'Coffrets', count: PRODUCTS.filter(p => p.category === 'packs').length },
     { id: 'limited', label: 'Éditions Rares', count: PRODUCTS.filter(p => p.isLimited).length },
-  ];
+  ].filter((cat) => cat.count > 0);
 
   return (
     <div className="py-12 bg-[#FCF9F2] min-h-screen">

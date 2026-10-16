@@ -6,6 +6,9 @@ import { SITE_CONFIG } from '../config';
 import { soundManager } from '../utils/sound';
 import { Star, ShoppingBag, MessageCircle, Share2, Check, ShieldCheck, Truck, Clock, ArrowLeft, ArrowRight, Heart } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
+import { ProductImage } from '../data/products';
+import { formatPrice, hasPrice } from '../utils/price';
+import { imageFitClass } from '../utils/image';
 
 export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -28,6 +31,12 @@ export const ProductDetailPage: React.FC = () => {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [shared, setShared] = useState(false);
 
+  // Revenir à la 1ère photo / au 1er format quand on navigue vers un autre produit
+  useEffect(() => {
+    setActiveImageIdx(0);
+    setSelectedVariantIdx(0);
+  }, [slug]);
+
   if (!product) {
     return (
       <div className="py-24 text-center px-4 min-h-[60vh] flex flex-col items-center justify-center">
@@ -41,9 +50,11 @@ export const ProductDetailPage: React.FC = () => {
   }
 
   const currentVariant = product.variants[selectedVariantIdx] || product.variants[0];
-  const images = product.gallery && product.gallery.length > 0 
-    ? product.gallery 
-    : ([product.image, product.secondaryImage].filter(Boolean) as string[]);
+  const images: ProductImage[] = [
+    { src: product.image, alt: product.imageAlt, fit: product.imageFit },
+    ...(product.gallery ?? []),
+  ];
+  const activeImage = images[activeImageIdx] ?? images[0];
 
   // Related products from same category or featured
   const relatedProducts = PRODUCTS.filter((p) => p.id !== product.id && (p.category === product.category || p.featured)).slice(0, 3);
@@ -66,7 +77,7 @@ export const ProductDetailPage: React.FC = () => {
   const handleWhatsAppOrder = () => {
     soundManager.playDropSound();
     const text = encodeURIComponent(
-      `Salam Alaykoum ${SITE_CONFIG.name},\nJe souhaite commander le produit suivant :\n- ${product.name} (${product.arabicName})\n- Format : ${currentVariant.weight}\n- Quantité : ${quantity}\n- Montant : ${currentVariant.price * quantity} ${SITE_CONFIG.currency}\n\nPouvez-vous me confirmer la disponibilité et la livraison ?`
+      `Salam Alaykoum ${SITE_CONFIG.name},\nJe souhaite commander le produit suivant :\n- ${product.name} (${product.arabicName})\n- Format : ${currentVariant.weight}\n- Quantité : ${quantity}\n${hasPrice(currentVariant.price) ? `- Montant : ${currentVariant.price * quantity} ${SITE_CONFIG.currency}\n` : ''}\nPouvez-vous me confirmer la disponibilité et la livraison ?`
     );
     window.open(`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
@@ -91,14 +102,17 @@ export const ProductDetailPage: React.FC = () => {
       "@type": "Brand",
       "name": SITE_CONFIG.name
     },
-    "offers": {
-      "@type": "Offer",
-      "url": `${SITE_CONFIG.url}/produit/${product.slug}`,
-      "priceCurrency": "MAD",
-      "price": currentVariant.price,
-      "availability": "https://schema.org/InStock",
-      "itemCondition": "https://schema.org/NewCondition"
-    },
+    // Offre publiée uniquement quand un prix est renseigné
+    ...(hasPrice(currentVariant.price) && {
+      "offers": {
+        "@type": "Offer",
+        "url": `${SITE_CONFIG.url}/produit/${product.slug}`,
+        "priceCurrency": "MAD",
+        "price": currentVariant.price,
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition"
+      },
+    }),
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": product.rating,
@@ -128,12 +142,12 @@ export const ProductDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-20">
           {/* Gallery (Left: 6 cols) */}
           <div className="lg:col-span-6 space-y-4 lg:sticky lg:top-28">
-            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-white border border-[#D99A1E]/20 shadow-lg">
+            <div className="relative aspect-[4/5] max-h-[78vh] w-full rounded-3xl overflow-hidden bg-[#FBF7EE] border border-[#D99A1E]/20 shadow-lg">
               <img
-                src={images[activeImageIdx] || product.image}
-                alt={product.name}
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover object-center"
+                src={activeImage.src}
+                alt={activeImage.alt}
+                decoding="async"
+                className={`w-full h-full ${imageFitClass(activeImage.fit)}`}
               />
               {product.isLimited && (
                 <div className="absolute top-4 left-4 bg-[#2B1A0E] text-[#F5D07A] text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-sm shadow-md">
@@ -152,11 +166,17 @@ export const ProductDetailPage: React.FC = () => {
                       soundManager.playDropSound();
                       setActiveImageIdx(i);
                     }}
-                    className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                    aria-label={`Afficher la photo ${i + 1}`}
+                    className={`w-20 h-20 rounded-xl overflow-hidden border-2 bg-[#FBF7EE] transition-all ${
                       activeImageIdx === i ? 'border-[#D99A1E] shadow-sm scale-102' : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img
+                      src={img.src}
+                      alt=""
+                      loading="lazy"
+                      className={`w-full h-full ${img.fit === 'contain' ? 'object-contain p-1 mix-blend-multiply' : 'object-cover'}`}
+                    />
                   </button>
                 ))}
               </div>
@@ -201,9 +221,9 @@ export const ProductDetailPage: React.FC = () => {
                 </span>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-serif font-bold text-[#2B1A0E] tabular-nums">
-                    {currentVariant.price * quantity} {SITE_CONFIG.currency}
+                    {formatPrice(currentVariant.price * quantity)}
                   </span>
-                  {currentVariant.oldPrice && (
+                  {hasPrice(currentVariant.oldPrice) && (
                     <span className="text-sm text-[#2B1A0E]/40 line-through tabular-nums">
                       {currentVariant.oldPrice * quantity} {SITE_CONFIG.currency}
                     </span>
@@ -236,7 +256,7 @@ export const ProductDetailPage: React.FC = () => {
                   >
                     <span className="block text-xs font-bold">{v.weight}</span>
                     <span className={`block text-xs mt-0.5 tabular-nums ${selectedVariantIdx === idx ? 'text-[#F5D07A]' : 'text-[#8A5A12]'}`}>
-                      {v.price} {SITE_CONFIG.currency}
+                      {formatPrice(v.price)}
                     </span>
                   </button>
                 ))}
@@ -393,7 +413,7 @@ export const ProductDetailPage: React.FC = () => {
         <div>
           <span className="text-[11px] text-[#8A5A12] block font-semibold truncate max-w-[130px]">{product.name}</span>
           <span className="text-base font-serif font-bold text-[#2B1A0E] tabular-nums">
-            {currentVariant.price * quantity} {SITE_CONFIG.currency}
+            {formatPrice(currentVariant.price * quantity)}
           </span>
         </div>
         <div className="flex items-center gap-2">

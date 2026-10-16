@@ -10,6 +10,7 @@ export const SITE_CONFIG = {
   
   // Commerce settings
   currency: "DH",
+  pricePlaceholder: "Prix sur demande", // Affiché tant qu'un prix produit vaut 0
   freeShippingThreshold: 350, // Livraison offerte à partir de 350 DH partout au Maroc
   standardShippingFee: 35, // Frais de livraison standard
   

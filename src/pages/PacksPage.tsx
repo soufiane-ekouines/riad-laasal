@@ -39,17 +39,19 @@ export const PacksPage: React.FC = () => {
         </div>
 
         {/* Section 2: Limited Editions */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-8 pb-3 border-b border-[#D99A1E]/20">
-            <Sparkles className="w-5 h-5 text-[#8A5A12]" />
-            <h2 className="text-2xl font-serif font-bold text-[#2B1A0E]">Récoltes Confidentielles & Rares</h2>
+        {limited.length > 0 && (
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-8 pb-3 border-b border-[#D99A1E]/20">
+              <Sparkles className="w-5 h-5 text-[#8A5A12]" />
+              <h2 className="text-2xl font-serif font-bold text-[#2B1A0E]">Récoltes Confidentielles & Rares</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {limited.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {limited.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
+        )}
 
         {/* Corporate / Corporate Gift Banner */}
         <div className="bg-[#2B1A0E] text-[#FFF8E7] rounded-3xl p-8 sm:p-12 border border-[#D99A1E]/30 relative overflow-hidden shadow-2xl">

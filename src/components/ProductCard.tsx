@@ -5,6 +5,8 @@ import { Product } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { SITE_CONFIG } from '../config';
 import { soundManager } from '../utils/sound';
+import { formatPrice, hasPrice, whatsappPriceSuffix } from '../utils/price';
+import { imageFitClass } from '../utils/image';
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
   const [rotateY, setRotateY] = useState(0);
 
   const defaultVariant = product.variants[0];
+  const secondaryImage = product.gallery?.[0];
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -56,7 +59,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
     e.stopPropagation();
     soundManager.playDropSound();
     const text = encodeURIComponent(
-      `Salam Alaykoum ${SITE_CONFIG.name}, je souhaite commander ${product.name} (${defaultVariant.weight}) à ${defaultVariant.price} ${SITE_CONFIG.currency}.`
+      `Salam Alaykoum ${SITE_CONFIG.name}, je souhaite commander ${product.name} (${defaultVariant.weight})${whatsappPriceSuffix(defaultVariant.price)}.`
     );
     window.open(`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
@@ -75,16 +78,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
       <Link
         to={`/produit/${product.slug}`}
         onClick={() => soundManager.playDropSound()}
-        className="relative block aspect-[4/3] overflow-hidden bg-[#FBF7EE]"
+        className="relative block aspect-[4/5] overflow-hidden bg-[#FBF7EE]"
       >
         {!imageError ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            onError={() => setImageError(true)}
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-          />
+          <>
+            <img
+              src={product.image}
+              alt={product.imageAlt}
+              loading="lazy"
+              decoding="async"
+              onError={() => setImageError(true)}
+              className={`w-full h-full ${imageFitClass(product.imageFit)} group-hover:scale-105 transition-all duration-700 ease-out ${
+                secondaryImage ? 'group-hover:opacity-0' : ''
+              }`}
+            />
+            {secondaryImage && (
+              <img
+                src={secondaryImage.src}
+                alt=""
+                aria-hidden="true"
+                loading="lazy"
+                decoding="async"
+                className={`absolute inset-0 w-full h-full ${imageFitClass(secondaryImage.fit)} opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out`}
+              />
+            )}
+          </>
         ) : (
           /* Graceful Fallback Container with Honey Aesthetic (Zero Broken Images) */
           <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FAF3E4] via-[#F3E5C8] to-[#EBD4A7] p-6 text-center">
@@ -158,9 +176,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }
         <div className="pt-3 border-t border-[#2B1A0E]/06 flex items-center justify-between mt-2">
           <div>
             <span className="text-base font-serif font-bold text-[#2B1A0E] tabular-nums">
-              {defaultVariant.price} {SITE_CONFIG.currency}
+              {formatPrice(defaultVariant.price)}
             </span>
-            {defaultVariant.oldPrice && (
+            {hasPrice(defaultVariant.oldPrice) && (
               <span className="text-xs text-[#2B1A0E]/40 line-through ml-1.5 tabular-nums">
                 {defaultVariant.oldPrice} {SITE_CONFIG.currency}
               </span>

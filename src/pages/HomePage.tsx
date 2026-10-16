@@ -214,8 +214,8 @@ export const HomePage: React.FC = () => {
             className="group relative rounded-3xl overflow-hidden min-h-[420px] flex flex-col justify-end p-8 sm:p-10 shadow-xl border border-[#D99A1E]/30"
           >
             <img
-              src={PRODUCTS[0].image}
-              alt="Miels Purs du Maroc"
+              src="/images/products/gamme-miels-400g-thym-oranger-lavande-eucalyptus.jpg"
+              alt="Gamme de miels Riad El Aâssal : Thym, Oranger, Lavande et Eucalyptus"
               referrerPolicy="no-referrer"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
             />
@@ -245,8 +245,8 @@ export const HomePage: React.FC = () => {
             className="group relative rounded-3xl overflow-hidden min-h-[420px] flex flex-col justify-end p-8 sm:p-10 shadow-xl border border-[#D99A1E]/30"
           >
             <img
-              src={PRODUCTS[1].image}
-              alt="Amlou Artisanal aux Amandes"
+              src={(PRODUCTS.find(p => p.category === 'pate-a-tartiner') ?? PRODUCTS[0]).image}
+              alt="Pot d'Amlou aux Amandes Riad El Aâssal"
               referrerPolicy="no-referrer"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
             />
@@ -383,7 +383,7 @@ export const HomePage: React.FC = () => {
               <div className="lg:col-span-5 flex justify-center">
                 <div className="relative group max-w-sm rounded-2xl overflow-hidden border border-[#D99A1E]/40 shadow-2xl">
                   <img
-                    src={PRODUCTS.find(p => p.slug === mainOffer.featuredProductSlug)?.image || PRODUCTS[8].image}
+                    src={PRODUCTS.find(p => p.slug === mainOffer.featuredProductSlug)?.image || PRODUCTS[0].image}
                     alt={mainOffer.title}
                     referrerPolicy="no-referrer"
                     className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500"

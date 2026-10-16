@@ -5,6 +5,7 @@ import { useCart, CustomerDetails } from '../context/CartContext';
 import { SITE_CONFIG } from '../config';
 import { Link } from 'react-router-dom';
 import { soundManager } from '../utils/sound';
+import { formatPrice } from '../utils/price';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -19,6 +20,7 @@ export const CartDrawer: React.FC = () => {
     amountNeededForFreeShipping,
     freeShippingProgress,
     totalPrice,
+    hasUnpricedItems,
     generateWhatsAppOrderUrl,
   } = useCart();
 
@@ -82,7 +84,8 @@ export const CartDrawer: React.FC = () => {
               </button>
             </div>
 
-            {/* Free Shipping Progress Indicator */}
+            {/* Free Shipping Progress Indicator (masqué tant que des prix restent à confirmer) */}
+            {!hasUnpricedItems && (
             <div className="bg-[#FAF4E6] px-5 py-3 border-b border-[#D99A1E]/15">
               <div className="flex justify-between items-center text-xs mb-1.5 font-medium">
                 {isFreeShipping ? (
@@ -103,6 +106,7 @@ export const CartDrawer: React.FC = () => {
                 />
               </div>
             </div>
+            )}
 
             {/* Items List or Empty State */}
             <div className="flex-1 overflow-y-auto p-5 divide-y divide-[#2B1A0E]/08">
@@ -132,14 +136,14 @@ export const CartDrawer: React.FC = () => {
                     <img
                       src={item.image}
                       alt={item.name}
-                      referrerPolicy="no-referrer"
+                      loading="lazy"
                       className="w-16 h-16 object-cover rounded-lg border border-[#D99A1E]/20 bg-[#FFF]"
                     />
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-semibold text-[#2B1A0E] truncate">{item.name}</h4>
                       <p className="text-xs text-[#8A5A12] font-medium">{item.weight}</p>
                       <div className="text-xs font-semibold text-[#2B1A0E] mt-1">
-                        {item.price} {SITE_CONFIG.currency}
+                        {formatPrice(item.price)}
                       </div>
 
                       {/* Quantity selector */}
@@ -184,7 +188,7 @@ export const CartDrawer: React.FC = () => {
                     </div>
 
                     <div className="text-right font-serif font-bold text-sm text-[#2B1A0E] tabular-nums">
-                      {item.price * item.quantity} {SITE_CONFIG.currency}
+                      {formatPrice(item.price * item.quantity)}
                     </div>
                   </div>
                 ))
@@ -243,6 +247,13 @@ export const CartDrawer: React.FC = () => {
             {items.length > 0 && (
               <div className="p-5 border-t border-[#2B1A0E]/10 bg-white">
                 <div className="space-y-1.5 text-xs text-[#2B1A0E]/80 mb-4">
+                  {hasUnpricedItems ? (
+                  <div className="flex justify-between text-base font-serif font-bold text-[#2B1A0E]">
+                    <span>Total</span>
+                    <span className="text-[#8A5A12]">{SITE_CONFIG.pricePlaceholder}</span>
+                  </div>
+                  ) : (
+                  <>
                   <div className="flex justify-between">
                     <span>Sous-total</span>
                     <span className="font-semibold tabular-nums">{subtotal} {SITE_CONFIG.currency}</span>
@@ -261,6 +272,8 @@ export const CartDrawer: React.FC = () => {
                     <span>Total</span>
                     <span className="text-[#8A5A12] tabular-nums">{totalPrice} {SITE_CONFIG.currency}</span>
                   </div>
+                  </>
+                  )}
                   <p className="text-[11px] text-[#2B1A0E]/60 text-right">Paiement en espèces à la livraison</p>
                 </div>
 
@@ -270,7 +283,7 @@ export const CartDrawer: React.FC = () => {
                   className="w-full py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-semibold text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-[#25D366]/20 transition-all transform active:scale-98"
                 >
                   <MessageCircle className="w-5 h-5 fill-current" />
-                  <span>Commander via WhatsApp ({totalPrice} {SITE_CONFIG.currency})</span>
+                  <span>Commander via WhatsApp{!hasUnpricedItems && ` (${totalPrice} ${SITE_CONFIG.currency})`}</span>
                   <ArrowRight className="w-4 h-4 ml-auto" />
                 </button>
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PRODUCTS } from '../data/products';
 import { soundManager } from '../utils/sound';
+import { formatPrice } from '../utils/price';
 import { ArrowUpRight } from 'lucide-react';
 import { SITE_CONFIG } from '../config';
 
@@ -9,7 +10,7 @@ export const BentoMosaicSection: React.FC = () => {
   const daghmouss = PRODUCTS.find((p) => p.slug === 'miel-daghmouss-ait-baamrane') || PRODUCTS[0];
   const amlou = PRODUCTS.find((p) => p.slug === 'amlou-aux-amandes-traditionnel') || PRODUCTS[1];
   const oranger = PRODUCTS.find((p) => p.slug === 'miel-oranger-taroudant') || PRODUCTS[2];
-  const pack = PRODUCTS.find((p) => p.slug === 'coffret-decouverte-3-miels') || PRODUCTS[8];
+  const pack = PRODUCTS.find((p) => p.slug === 'coffret-cadeau-3-pots') || PRODUCTS[PRODUCTS.length - 1];
 
   return (
     <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +56,7 @@ export const BentoMosaicSection: React.FC = () => {
             </p>
             <div className="flex items-center justify-between pt-2 border-t border-white/20">
               <span className="font-serif font-bold text-lg text-[#F5D07A] tabular-nums">
-                À partir de {daghmouss.variants[0]?.price} {SITE_CONFIG.currency}
+                {formatPrice(daghmouss.variants[0]?.price)}
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-white group-hover:underline">
                 Découvrir ce cru <ArrowUpRight className="w-4 h-4" />
@@ -90,7 +91,7 @@ export const BentoMosaicSection: React.FC = () => {
             </p>
             <div className="flex items-center justify-between pt-2 border-t border-white/20">
               <span className="font-serif font-bold text-base text-[#F5D07A] tabular-nums">
-                {amlou.variants[0]?.price} {SITE_CONFIG.currency}
+                {formatPrice(amlou.variants[0]?.price)}
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-white group-hover:underline">
                 Déguster <ArrowUpRight className="w-4 h-4" />
@@ -125,7 +126,7 @@ export const BentoMosaicSection: React.FC = () => {
             </p>
             <div className="flex items-center justify-between">
               <span className="font-serif font-bold text-base text-[#F5D07A] tabular-nums">
-                {pack.variants[0]?.price} {SITE_CONFIG.currency}
+                {formatPrice(pack.variants[0]?.price)}
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-white">
                 Offrir <ArrowUpRight className="w-4 h-4" />
@@ -160,7 +161,7 @@ export const BentoMosaicSection: React.FC = () => {
             </p>
             <div className="flex items-center justify-between pt-2 border-t border-white/20">
               <span className="font-serif font-bold text-base text-[#F5D07A] tabular-nums">
-                À partir de {oranger.variants[0]?.price} {SITE_CONFIG.currency}
+                {formatPrice(oranger.variants[0]?.price)}
               </span>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-white group-hover:underline">
                 Voir le produit <ArrowUpRight className="w-4 h-4" />

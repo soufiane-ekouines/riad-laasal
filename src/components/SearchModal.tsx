@@ -5,6 +5,7 @@ import { PRODUCTS, Product } from '../data/products';
 import { useNavigate } from 'react-router-dom';
 import { SITE_CONFIG } from '../config';
 import { soundManager } from '../utils/sound';
+import { formatPrice } from '../utils/price';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -116,7 +117,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
                             {product.name}
                           </h4>
                           <span className="text-xs font-semibold text-[#2B1A0E] ml-2 tabular-nums">
-                            {product.variants[0]?.price} {SITE_CONFIG.currency}
+                            {formatPrice(product.variants[0]?.price)}
                           </span>
                         </div>
                         <p className="text-xs text-[#8A5A12] truncate">{product.tagline}</p>

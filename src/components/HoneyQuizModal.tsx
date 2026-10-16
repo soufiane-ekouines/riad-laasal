@@ -5,6 +5,7 @@ import { PRODUCTS, Product } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { SITE_CONFIG } from '../config';
 import { soundManager } from '../utils/sound';
+import { formatPrice } from '../utils/price';
 
 interface HoneyQuizModalProps {
   isOpen: boolean;
@@ -195,7 +196,7 @@ export const HoneyQuizModal: React.FC<HoneyQuizModalProps> = ({ isOpen, onClose 
                       {recommendedProduct.description}
                     </p>
                     <div className="text-sm font-serif font-bold text-[#8A5A12] mt-2 tabular-nums">
-                      {recommendedProduct.variants[0]?.price} {SITE_CONFIG.currency} ({recommendedProduct.variants[0]?.weight})
+                      {formatPrice(recommendedProduct.variants[0]?.price)} ({recommendedProduct.variants[0]?.weight})
                     </div>
                   </div>
                 </div>

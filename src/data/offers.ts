@@ -26,7 +26,7 @@ export const EXCLUSIVE_OFFERS: Offer[] = [
     savings: 40,
     promoCode: "TERROIR40",
     endDate: "2026-10-31T23:59:59",
-    featuredProductSlug: "coffret-decouverte-3-miels",
+    featuredProductSlug: "coffret-cadeau-3-pots",
     inStock: true,
     giftsIncluded: [
       "Cuillère à miel en bois d'olivier véritable (valeur 45 DH)",

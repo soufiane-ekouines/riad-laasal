@@ -5,6 +5,7 @@ import { Product } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { SITE_CONFIG } from '../config';
 import { soundManager } from '../utils/sound';
+import { formatPrice, hasPrice, whatsappPriceSuffix } from '../utils/price';
 import { Link } from 'react-router-dom';
 
 interface QuickViewModalProps {
@@ -40,7 +41,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
   const handleWhatsAppOrder = () => {
     soundManager.playDropSound();
     const text = encodeURIComponent(
-      `Salam Alaykoum ${SITE_CONFIG.name}, je souhaite commander ${quantity}x ${product.name} (${currentVariant.weight}) au prix de ${currentVariant.price * quantity} ${SITE_CONFIG.currency}.`
+      `Salam Alaykoum ${SITE_CONFIG.name}, je souhaite commander ${quantity}x ${product.name} (${currentVariant.weight})${whatsappPriceSuffix(currentVariant.price * quantity, 'au prix de')}.`
     );
     window.open(`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
@@ -81,9 +82,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
           <div className="md:w-1/2 relative bg-[#F8F1E2] flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-[#D99A1E]/15">
             <img
               src={product.image}
-              alt={product.name}
-              referrerPolicy="no-referrer"
-              className="max-h-72 w-full object-contain rounded-2xl shadow-md"
+              alt={product.imageAlt}
+              decoding="async"
+              className={`aspect-[4/5] max-h-72 w-auto rounded-2xl ${
+                product.imageFit === 'contain' ? 'object-contain mix-blend-multiply' : 'object-cover shadow-md'
+              }`}
             />
             {product.isLimited && (
               <span className="absolute top-4 left-4 bg-[#8A5A12] text-white text-[11px] font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider">
@@ -119,9 +122,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
               {/* Price */}
               <div className="flex items-baseline gap-2 mb-4">
                 <span className="text-2xl font-serif font-bold text-[#8A5A12] tabular-nums">
-                  {currentVariant.price * quantity} {SITE_CONFIG.currency}
+                  {formatPrice(currentVariant.price * quantity)}
                 </span>
-                {currentVariant.oldPrice && (
+                {hasPrice(currentVariant.oldPrice) && (
                   <span className="text-sm text-[#2B1A0E]/40 line-through tabular-nums">
                     {currentVariant.oldPrice * quantity} {SITE_CONFIG.currency}
                   </span>
@@ -151,7 +154,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                           : 'bg-[#F5ECDC] text-[#2B1A0E] hover:bg-[#EAE0CD]'
                       }`}
                     >
-                      {v.weight} — {v.price} {SITE_CONFIG.currency}
+                      {v.weight}{hasPrice(v.price) && ` — ${formatPrice(v.price)}`}
                     </button>
                   ))}
                 </div>

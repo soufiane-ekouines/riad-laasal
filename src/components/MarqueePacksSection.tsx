@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PRODUCTS } from '../data/products';
 import { soundManager } from '../utils/sound';
+import { formatPrice } from '../utils/price';
 import { SITE_CONFIG } from '../config';
 
 export const MarqueePacksSection: React.FC = () => {
@@ -58,7 +59,7 @@ export const MarqueePacksSection: React.FC = () => {
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-xs text-[#FFF8E7]/60 truncate">{item.origin}</span>
                   <span className="text-xs font-semibold text-[#F5D07A] font-mono tabular-nums ml-2">
-                    {item.variants[0]?.price} {SITE_CONFIG.currency}
+                    {formatPrice(item.variants[0]?.price)}
                   </span>
                 </div>
               </div>

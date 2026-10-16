@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { SITE_CONFIG } from '../config';
+import { hasPrice } from '../utils/price';
 
 export interface CartItem {
   id: string; // unique cart entry id (productId + variantId)
@@ -38,6 +39,7 @@ interface CartContextType {
   amountNeededForFreeShipping: number;
   freeShippingProgress: number;
   totalPrice: number;
+  hasUnpricedItems: boolean; // au moins un article dont le prix n'est pas encore renseigné
   generateWhatsAppOrderUrl: (customer?: CustomerDetails) => string;
   // Abandoned cart restoration
   hasAbandonedCartNotice: boolean;
@@ -50,7 +52,8 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'riad_cart_items_v1';
+// v2 : catalogue réel (les paniers v1 contenaient les anciens produits/prix de démo)
+const STORAGE_KEY = 'riad_cart_items_v2';
 const TIMESTAMP_KEY = 'riad_cart_last_updated_v1';
 const SESSION_KEY = 'riad_session_id_v1';
 const ABANDONED_NOTICE_DISMISSED_KEY = 'riad_abandoned_dismissed_v1';
@@ -199,19 +202,26 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const amountNeededForFreeShipping = Math.max(0, SITE_CONFIG.freeShippingThreshold - subtotal);
   const freeShippingProgress = Math.min(100, Math.round((subtotal / SITE_CONFIG.freeShippingThreshold) * 100));
   const totalPrice = subtotal + shippingCost;
+  const hasUnpricedItems = items.some((item) => !hasPrice(item.price));
 
   const generateWhatsAppOrderUrl = (customer?: CustomerDetails) => {
     let message = `Salam Alaykoum *${SITE_CONFIG.name}*,\n\nJe souhaite valider ma commande sur votre boutique en ligne :\n\n`;
-    
+
     items.forEach((item, index) => {
       message += `${index + 1}. *${item.name}* (${item.weight})\n`;
-      message += `   Quantité : ${item.quantity} x ${item.price} ${SITE_CONFIG.currency} = ${item.quantity * item.price} ${SITE_CONFIG.currency}\n`;
+      message += hasPrice(item.price)
+        ? `   Quantité : ${item.quantity} x ${item.price} ${SITE_CONFIG.currency} = ${item.quantity * item.price} ${SITE_CONFIG.currency}\n`
+        : `   Quantité : ${item.quantity} (prix à confirmer)\n`;
     });
 
     message += `\n-----------------------\n`;
-    message += `*Sous-total :* ${subtotal} ${SITE_CONFIG.currency}\n`;
-    message += `*Frais de livraison :* ${isFreeShipping ? 'Offerte (Gratuit)' : `${shippingCost} ${SITE_CONFIG.currency}`}\n`;
-    message += `*TOTAL À RÉGLER :* ${totalPrice} ${SITE_CONFIG.currency} (Paiement à la livraison)\n`;
+    if (hasUnpricedItems) {
+      message += `*Total :* à confirmer par ${SITE_CONFIG.name} (Paiement à la livraison)\n`;
+    } else {
+      message += `*Sous-total :* ${subtotal} ${SITE_CONFIG.currency}\n`;
+      message += `*Frais de livraison :* ${isFreeShipping ? 'Offerte (Gratuit)' : `${shippingCost} ${SITE_CONFIG.currency}`}\n`;
+      message += `*TOTAL À RÉGLER :* ${totalPrice} ${SITE_CONFIG.currency} (Paiement à la livraison)\n`;
+    }
 
     if (customer && customer.fullName) {
       message += `\n*Coordonnées de livraison :*\n`;
@@ -248,6 +258,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         amountNeededForFreeShipping,
         freeShippingProgress,
         totalPrice,
+        hasUnpricedItems,
         generateWhatsAppOrderUrl,
         hasAbandonedCartNotice,
         abandonedCartItemCount,

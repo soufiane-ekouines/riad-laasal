@@ -74,7 +74,7 @@ export const Header: React.FC = () => {
             className="flex items-center gap-2 group focus-visible:outline-none"
             aria-label="Accueil Riad El Aâssal"
           >
-            <BrandLogo className="h-10 sm:h-11" variant="gold" showTagline={true} />
+            <BrandLogo className="h-11 sm:h-12" variant="gold" showTagline={true} />
           </Link>
 
           {/* Zone 2: Navigation Links (Clean unboxed typography) */}
